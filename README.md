@@ -7,17 +7,10 @@ Open me:
 ---
 To start use project make next commands:
 ```
-poetry shell
-poetry install
+source venv/bin/activate
+python -m pip install -r requirements.txt
 ```
 And now run **analyzer.py**.
 
 ----
-Please don't forget to add new _requirements_ make next command:
-```
-poetry add "requirement"
-```
-To remove _requirements_:
-```
-poetry remove "requirement"
-```
+Please don't forget to add new _requirements_ in requirements.txt.
