@@ -1,5 +1,5 @@
-from attackers import *
-from cnn.mtcnn.mtcnn_cv import MTCNN
+from attackers.i_attacker import Attacker
+from cnn.i_cnn import Cnn
 from protectors import *
 from dataset.i_data import Data
 
@@ -15,15 +15,19 @@ if __name__ == "__main__":
     1.2) атакуем изображения и сравниваем с 1.1, получаем процент атакованных изображений с помощью CNN
     1.3) все атакованные изображения исправляем от искажений с 1.2 и с помощью CNN получаем процент исправленных
     """
-    # !!!! кажется CNN надо обучить ... либо найти готовую
+    all_img = 0
+    img_number = 0
 
     data = Data("photo")
     # data = Data("cifar")
-    print(data.img_count)
-    img_data = data.get_img(0, 0)
-    print(img_data)
-    img, meta_img = img_data[0]
-    cnn = MTCNN()
-    print(cnn.detect_faces(img))
+    cnn = Cnn("mtcnn")
+    # attacker = Attacker(attack_type="one_px", cnn=cnn)
+
+    img_data = data.get_img(img_number, all_img)
+    for i in range(data.img_count if all_img == 1 else 1):
+        img, meta_img = img_data[i]
+        r = cnn.analyze_img(img)
+
+
 
     pass

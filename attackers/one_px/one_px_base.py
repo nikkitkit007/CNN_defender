@@ -1,12 +1,14 @@
+from typing import Tuple
 import multiprocessing
 # from multiprocessing import Process, Pipe
 
 from attackers.evolutionary_optimization.attacker import AttackEvo
-from dataset.utils.image_worker import ImageWorker
+# from dataset.utils.image_worker import ImageWorker
 # from configurations import config
 import numpy
 
-from attackers.attacker import ABSAttacker
+from attackers.abs_attacker import ABSAttacker
+from attackers.one_px.img_worker_one_px import ImageWorkerOnePx
 
 # https://medium.com/devopss-hole/python-multiprocessing-pickle-issue-e2d35ccf96a9
 # multiprocessing.set_start_method('fork')
@@ -17,25 +19,35 @@ from attackers.attacker import ABSAttacker
 PIXELS = []
 
 
-class AttackOnePx(ABSAttacker):
-    def __init__(self, attack_algorithm: str = "dea"):
-        self.attack_method = AttackEvo(attack_algorithm=attack_algorithm)
+class AttackerOnePx(ABSAttacker):
+    def __init__(self, cnn, evo_algorithm: str = "dea"):
+        self.target = None
+        self.target_meta = None
+        self.img_worker = ImageWorkerOnePx(cnn)
 
-    def attack(self, image: numpy.ndarray):
-        self.attack_image(image)
+        self.scanner = cnn
+        self.attack_method = AttackEvo(attack_algorithm=evo_algorithm)
 
-    @staticmethod
-    def analyze_face(face_to_analyze, x: int, y: int, r: int, g: int, b: int) -> float:
+    def init(self, img, meta):
+        self.target = img
+        self.target_meta = meta
+
+    def attack(self, img: numpy.ndarray, meta: str, cnn,) -> list:
+        self.init(img, meta)
+
+        return self.attack_image(img)
+
+    def analyze_face(self, face_to_analyze, x: int, y: int, r: int, g: int, b: int) -> float:
         face_1px_attack = face_to_analyze.copy()
 
         face_1px_attack[x][y] = (r, g, b)
 
-        result = ImageWorker.get_face_boxes(image=face_1px_attack)
+        result = self.img_worker.get_face_boxes(image=face_1px_attack)
 
         if result:
             return result[0]['confidence']
 
-    def attack_image(self, image: list):
+    def attack_image(self, image: numpy.ndarray):
         def function_to_attack(params: list) -> float:
             print("Check params:", params)
 
@@ -45,7 +57,7 @@ class AttackOnePx(ABSAttacker):
             g = max(0, min(round(params[3] * limit_rgb), limit_rgb))
             b = max(0, min(round(params[4] * limit_rgb), limit_rgb))
 
-            accuracy = AttackOnePx.analyze_face(face, x, y, r, g, b)
+            accuracy = AttackerOnePx.analyze_face(face, x, y, r, g, b)
             print("Accuracy:", accuracy)
             if accuracy:
                 print(x, y, r, g, b, accuracy, sep=', ')
@@ -53,7 +65,7 @@ class AttackOnePx(ABSAttacker):
             else:
                 print(x, y, r, g, b, sep=', ')
                 attacked_pixel = [x, y, r, g, b]
-                accuracy = AttackOnePx.analyze_face(image, x + x1, y + y1, r, g, b)
+                accuracy = AttackerOnePx.analyze_face(image, x + x1, y + y1, r, g, b)
                 if accuracy:
                     accuracy += 10
                     print("Find on big pic", x, y, r, g, b, accuracy, sep=', ')
@@ -67,7 +79,7 @@ class AttackOnePx(ABSAttacker):
         # scaled_im = ImageWorker.get_scale_image(image=image)
         # я уже загружаю изображение с измененным разрешением
 
-        boxes = ImageWorker.get_face_boxes(image)
+        boxes = ImageWorkerOnePx.get_face_boxes(image)
 
         procs = []
 
@@ -103,6 +115,6 @@ class AttackOnePx(ABSAttacker):
         for i in PIXELS:
             image[i[0]][i[1]] = (i[2], i[3], i[4])
 
-        ImageWorker.save_image(image)
+        ImageWorkerOnePx.save_image(image)
 
         return image

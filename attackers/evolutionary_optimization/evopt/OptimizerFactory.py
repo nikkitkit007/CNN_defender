@@ -5,9 +5,9 @@ import numpy
 import random
 import scipy.optimize
 
-import evolutionary_optimization.evopt.GeneticAlgorithm as GeneticAlgorithm
-import evolutionary_optimization.evopt.ParticleSwarm as ParticleSwarm
-import evolutionary_optimization.evopt.DifferentialEvolutionAlgorithm as DifferentialEvolutionAlgorithm
+import attackers.evolutionary_optimization.evopt.GeneticAlgorithm as GeneticAlgorithm
+import attackers.evolutionary_optimization.evopt.ParticleSwarm as ParticleSwarm
+import attackers.evolutionary_optimization.evopt.DifferentialEvolutionAlgorithm as DifferentialEvolutionAlgorithm
 
 
 def _format_float(n, length=20, digits=8):

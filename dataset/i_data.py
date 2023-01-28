@@ -1,3 +1,6 @@
+from typing import Tuple
+import numpy
+
 from dataset.cifar10.cifar_worker import CifarWorker
 from dataset.photos.photo_worker import PhotoWorker
 
@@ -21,7 +24,6 @@ class Data:
 
         self.img_count = self.dataset_worker.get_img_count()
 
-    def get_img(self, number=None, get_all=True):     # -> list[Tuple[numpy.ndarray, str]]
-        print(number, get_all)
+    def get_img(self, number=None, get_all=True) -> list[Tuple[numpy.ndarray, str]]:
         img_data = self.dataset_worker.get_img(number=number, get_all=get_all)
         return img_data
