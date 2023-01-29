@@ -21,13 +21,12 @@ if __name__ == "__main__":
     data = Data("photo")
     # data = Data("cifar")
     cnn = Cnn("mtcnn")
-    # attacker = Attacker(attack_type="one_px", cnn=cnn)
+    attacker = Attacker(attack_type="one_px", cnn=cnn)
 
     img_data = data.get_img(img_number, all_img)
     for i in range(data.img_count if all_img == 1 else 1):
         img, meta_img = img_data[i]
         r = cnn.analyze_img(img)
-
-
-
+        print(r)
+        attacker.attack(img=img, meta=meta_img)
     pass

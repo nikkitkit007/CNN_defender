@@ -20,6 +20,6 @@ class Attacker:
                 raise "Used not correct attack type"
         pass
 
-    def attack(self, img: numpy.ndarray, meta: str, cnn,) -> list:
-        img_attack_res = self.attacker.attack(img, meta, cnn)
+    def attack(self, img: numpy.ndarray, meta: str) -> list:
+        img_attack_res = self.attacker.attack(img, meta)
         return img_attack_res
