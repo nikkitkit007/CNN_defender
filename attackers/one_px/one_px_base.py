@@ -62,7 +62,7 @@ class AttackerOnePx(ABSAttacker):
         self.init(img, meta)
         return self._attack()
 
-    def _face_detection_confidence(self, face_to_analyze, px: Px) -> float:
+    def _face_detection_confidence(self, face_to_analyze, px: Px = None) -> float:
         face_1px_attack = face_to_analyze.copy()
 
         face_1px_attack[px.x][px.y] = (px.r, px.g, px.b)
@@ -82,17 +82,15 @@ class AttackerOnePx(ABSAttacker):
             g = max(0, min(round(params[3] * limit_rgb), limit_rgb))
             b = max(0, min(round(params[4] * limit_rgb), limit_rgb))
 
-            # px = Px(x=x, y=y, r=r, g=g, b=b)
-            px = Px(x=x+x1, y=y+y1, r=r, g=g, b=b)
-
-            accuracy = self._face_detection_confidence(self.target, px)
+            px = Px(x=x, y=y, r=r, g=g, b=b)
+            accuracy = self._face_detection_confidence(face, px)
 
             print("Check params:", px)
             print("Accuracy:", accuracy)
             if accuracy > 0.7:
                 return 1 - accuracy
             else:
-                exit(0)         # !!!!!
+                return 1        # !!!!! i need get px and stop attack process
 
         boxes = self.img_worker.get_face_boxes(self.target)
 
@@ -104,28 +102,31 @@ class AttackerOnePx(ABSAttacker):
             x1 = int(box['box'][1])
             x2 = x1 + int(box['box'][3])
 
-            face_box = FaceBox(x1=x1, x2=x2, y1=y1, y2=y2)
-
             # face to attack
+            face_box = FaceBox(x1=x1, x2=x2, y1=y1, y2=y2)
             face = self.target[face_box.x1:face_box.x2, face_box.y1:face_box.y2]
-
-            print(x1, y1)
             self.img_worker.show(face)
 
             # params for funk to attack
-            limit_height = face_box.y2-face_box.y1
-            limit_width = face_box.x2-face_box.x1
+            limit_height = face_box.y2-face_box.y1 - 1
+            limit_width = face_box.x2-face_box.x1 - 1
             limit_rgb = 255
 
             try:
-                self.attack_method.attack(function_to_attack)
+                weak_px = self.attack_method.attack(function_to_attack)
+                print(weak_px)
+                PIXELS.append(weak_px)
             except Exception as e:
-                print("_____", e)
+                print("Error with attack ", e)
 
-        # print(PIXELS)
-        # for i in PIXELS:
-        #     self.target[i[0]][i[1]] = (i[2], i[3], i[4])
+        print("Weak pixels are:", PIXELS)
+        for pixel in PIXELS:
+            self.target[pixel[0]][pixel[1]] = (pixel[2], pixel[3], pixel[4])
 
-        self.img_worker.save_image(self.target, self.target_meta, "./results/")
+        self.img_worker.show(self.target)
+
+        attack_res = self._face_detection_confidence(self.target)
+        if not attack_res:
+            self.img_worker.save_image(self.target, self.target_meta, "./results/")
 
         return self.target
