@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 class DatasetWorkerAbc(ABC):
 
     @abstractmethod
-    def get_img(self, number=None, get_all=True) -> list[Tuple[numpy.ndarray, str]]:
+    def get_img(self, number=None, is_get_all=True) -> list[Tuple[numpy.ndarray, str]]:
         pass
 
     @abstractmethod

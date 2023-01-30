@@ -16,7 +16,7 @@ class AttackEvo:
 
         # set hyper-parameters, optional
         optimizer_obj.optimizer.population_size = 20
-        optimizer_obj.optimizer.max_iterations = 60000
+        optimizer_obj.optimizer.max_iterations = 50000
 
         return optimizer_obj
 

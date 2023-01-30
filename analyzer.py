@@ -2,7 +2,7 @@ from attackers.i_attacker import Attacker
 from cnn.i_cnn import Cnn
 from protectors import *
 from dataset.i_data import Data
-
+from dataset.utils.base_img import BaseImageWorker
 
 def analyze():
     pass
@@ -19,8 +19,10 @@ if __name__ == "__main__":
     ###################################################
     #                       0
     ###################################################
-    img_number = 0
-    all_img = 0
+    img_number = 1
+    is_all_img = False
+
+    path_to_save_broken_img = "/broken_img/"
 
     data = Data("photo")
     cnn = Cnn("mtcnn")
@@ -29,13 +31,13 @@ if __name__ == "__main__":
     ###################################################
     #                       1
     ###################################################
-    img_data = data.get_img(img_number, all_img)
+    img_data = data.get_img(img_number, is_all_img)
     img_broken = []
 
     ###################################################
     #                       2
     ###################################################
-    for i in range(data.img_count if all_img == 1 else 1):
+    for i in range(data.img_count if is_all_img else 1):
         img, meta_img = img_data[i]
         scan_res = cnn.analyze_img(img)
         print(scan_res)
@@ -44,10 +46,13 @@ if __name__ == "__main__":
             ###################################################
             #                       3
             ###################################################
-            attack_res, img_attacked = attacker.attack(img=img, meta=meta_img)
-            print(attack_res)
+            BaseImageWorker.show(img)
+            img_attacked, attack_res = attacker.attack(img=img, meta=meta_img)
             if attack_res:
                 img_broken.append((img_attacked, attack_res))
+                BaseImageWorker.save_image(image=img_attacked,
+                                           image_name=meta_img,
+                                           path_to_save=path_to_save_broken_img)
 
     print(len(img_broken))
     print(img_broken)

@@ -212,6 +212,7 @@ class Optimizer(object):
 
         def fitness_function_wrapper(parameters):
             fitness = fitness_function(parameters)
+            # print("NIK", fitness)
             if math.isnan(fitness):
                 fitness = float('-inf')
             return fitness
@@ -219,10 +220,9 @@ class Optimizer(object):
         # Initialize the population to random values.
         context = Context(self)
         context.population = Population(self.population_size, parameter_count, fitness_function_wrapper)
-
+        is_finished = False
         # Loop until an exit condition occurs.
-        while True:
-
+        while not is_finished:
             # Log the iteration until it's lost forever.
             context.elapsed = datetime.datetime.now() - context.start
             context.generation += 1
@@ -271,6 +271,11 @@ class Optimizer(object):
                 # Keep the candidate if it offers an improvement over the previous agent.
                 if candidate.fitness > original.fitness:
                     context.population[agent_index_0] = candidate
+
+                if candidate.fitness == 1:
+                    is_finished = True
+                    context.exit_condition = ExitCondition.ABORT
+                    return context
 
     def __log(self, context):
         if self.log is not None:

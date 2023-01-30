@@ -261,7 +261,6 @@ class _SOptimizer(Optimizer):
             log_with_score('init', best_parameters)
         else:
             best_score = -float('inf')
-
         while True:
             execution += 1
 
@@ -271,6 +270,7 @@ class _SOptimizer(Optimizer):
             if end_time is not None:
                 if datetime.datetime.now() > end_time:
                     return best_parameters
+
 
             random_parameters = make_random_parameters()
 
@@ -311,6 +311,8 @@ class _SOptimizer(Optimizer):
             if score > best_score:
                 best_score = score
                 best_parameters = parameters
+
+
 
 
 class _PSOptimizer(Optimizer):

@@ -29,4 +29,6 @@ class BaseImageWorker:
         """
         save image in datetime formate
         """
-        cv2.imwrite(f"./{path_to_save}/{image_name}{datetime.now()}.{img_format}", image)
+        image_name = image_name[image_name.rfind("/")+1:image_name.rfind(".")]
+
+        cv2.imwrite(f"./{path_to_save}/{image_name}-{datetime.now()}.{img_format}", image)

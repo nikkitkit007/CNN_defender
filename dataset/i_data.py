@@ -24,6 +24,6 @@ class Data:
 
         self.img_count = self.dataset_worker.get_img_count()
 
-    def get_img(self, number=None, get_all=True) -> list[Tuple[numpy.ndarray, str]]:
-        img_data = self.dataset_worker.get_img(number=number, get_all=get_all)
+    def get_img(self, number=None, is_get_all=True) -> list[Tuple[numpy.ndarray, str]]:
+        img_data = self.dataset_worker.get_img(number=number, is_get_all=is_get_all)
         return img_data

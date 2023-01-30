@@ -88,8 +88,8 @@ class CifarWorker(DatasetWorkerAbc):
     def get_img_count(self) -> int:
         return self.datasets_count * self.dataset_img_count
 
-    def get_img(self, number=None, get_all=True) -> list[Tuple[numpy.ndarray, str]]:
-        if get_all:
+    def get_img(self, number=None, is_get_all=True) -> list[Tuple[numpy.ndarray, str]]:
+        if is_get_all:
             return self._get_img_all()
         else:
             return [self._get_img(dataset_number=number // self.datasets_count * self.dataset_img_count + 1,

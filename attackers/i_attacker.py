@@ -1,5 +1,5 @@
 import numpy
-
+from typing import Tuple
 from attackers.one_px.one_px_base import AttackerOnePx
 
 
@@ -20,6 +20,6 @@ class Attacker:
                 raise "Used not correct attack type"
         pass
 
-    def attack(self, img: numpy.ndarray, meta: str) -> list:
-        img_attack_res = self.attacker.attack(img, meta)
-        return img_attack_res
+    def attack(self, img: numpy.ndarray, meta: str) -> Tuple[numpy.ndarray, str]:
+        img_attack, img_attack_res = self.attacker.attack(img, meta)
+        return img_attack, img_attack_res

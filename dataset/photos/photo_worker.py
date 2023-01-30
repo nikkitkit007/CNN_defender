@@ -21,8 +21,8 @@ class PhotoWorker(DatasetWorkerAbc):
         images_list = os.listdir(self.image_directory)
         return len(images_list)
 
-    def get_img(self, number=None, get_all=True) -> list[Tuple[numpy.ndarray, str]]:
-        if get_all:
+    def get_img(self, number=None, is_get_all=True) -> list[Tuple[numpy.ndarray, str]]:
+        if is_get_all:
             return self._get_img_all()
         else:
             return [self._get_img(number)]
