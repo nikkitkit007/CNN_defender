@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import cv2
 from datetime import datetime
 
+from configurations.config import DEFAULT_IMG_SAVE_FORMAT
+
 
 class BaseImageWorker:
 
@@ -25,7 +27,7 @@ class BaseImageWorker:
     #     pass
 
     @staticmethod
-    def save_image(image: numpy.ndarray, image_name: str, path_to_save: str, img_format: str = "bmp"):
+    def save_image(image: numpy.ndarray, image_name: str, path_to_save: str, img_format: str = DEFAULT_IMG_SAVE_FORMAT):
         """
         save image in datetime formate
         """

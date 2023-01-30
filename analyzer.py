@@ -4,6 +4,9 @@ from protectors import *
 from dataset.i_data import Data
 from dataset.utils.base_img import BaseImageWorker
 
+import configurations.config as config
+
+
 def analyze():
     pass
 
@@ -22,11 +25,11 @@ if __name__ == "__main__":
     img_number = 1
     is_all_img = False
 
-    path_to_save_broken_img = "/broken_img/"
+    path_to_save_broken_img = config.PATH_TO_BROKEN_IMG
 
-    data = Data("photo")
-    cnn = Cnn("mtcnn")
-    attacker = Attacker(attack_type="one_px", cnn=cnn)
+    data = Data(config.DATA_SOURCE)
+    cnn = Cnn(config.CNN_NAME)
+    attacker = Attacker(attack_type=config.ATTACK_TYPE, cnn=cnn)
 
     ###################################################
     #                       1
